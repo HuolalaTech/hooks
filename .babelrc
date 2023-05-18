@@ -1,0 +1,22 @@
+{
+  "presets": [
+    [
+      "@babel/env",
+      {
+        "exclude": [
+          "transform-typeof-symbol"
+        ]
+      }
+    ],
+    "@babel/preset-typescript",
+    "@babel/preset-react"
+  ],
+  "plugins": [
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "corejs": false
+      }
+    ]
+  ]
+}
