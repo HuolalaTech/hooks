@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "./dist/esm",
     "module": "ES2015",
-    "lib": ["ES6", "DOM"],
+    "lib": ["ES5", "DOM"],
     "types": []
   },
   "exclude": ["src/*/tests"]

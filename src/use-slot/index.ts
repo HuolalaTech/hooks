@@ -1,32 +1,18 @@
-import type { DependencyList, ReactNode, RefObject } from 'react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { DependencyList, ReactNode, useReducer, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
+import { Slot } from './Slot';
+import { useEventListener } from '../use-event-listener';
 
-class DMap<K, K2, V> {
-  private readonly map;
-  constructor() {
-    this.map = new Map<K, Map<K2, V>>();
-  }
-  get(key: K) {
-    if (!this.map.has(key)) this.map.set(key, new Map<K2, V>());
-    const set = this.map.get(key);
-    if (!set) throw new Error(); // never
-    return set;
-  }
-  getLatestValue(key: K) {
-    const map = this.get(key);
-    const it = map.values();
-    let lastValue: V | null = null;
-    for (;;) {
-      const { done, value = null } = it.next();
-      if (done) break;
-      lastValue = value;
-    }
-    return lastValue;
-  }
-}
+const computeIfAbsent = <K extends PropertyKey, V>(map: Record<K, V>, key: K, factory: (key: K) => V) => {
+  if (!(key in map)) map[key] = factory(key);
+  return map[key];
+};
 
 const hub = new EventTarget();
-const storage = new DMap<string, unknown, ReactNode>();
+const storage: Record<PropertyKey, Slot> = Object.create(null);
+
+const SET_SLOT = 3;
+const GET_SLOT = 1;
 
 /**
  * Read the slot content. you can set content by `useSlot(name, factory, deps)`.
@@ -46,39 +32,35 @@ export function useSlot(name: string, factory: () => ReactNode, deps: Dependency
 export function useSlot(...args: [string] | [string, () => ReactNode, DependencyList]) {
   const [name, factory, deps = []] = args;
   const { length } = args;
+  const slot = computeIfAbsent(storage, name, () => new Slot());
+  const ref = useRef();
 
-  const ref: RefObject<unknown> = useRef({});
-  const defaultValue = useMemo(() => {
-    const value = storage.getLatestValue(name);
-    if (length === 3) storage.get(name).set(ref.current, value);
-    return value;
-  }, [name, length]);
-
-  const [current, setCurrent] = useState(defaultValue);
+  useMemo(() => {
+    if (length === SET_SLOT && typeof factory === 'function') {
+      slot.set(ref, factory());
+    }
+  }, [length, slot, ...deps]);
 
   useEffect(() => {
-    const ins = ref.current;
-    const update = () => {
-      setCurrent(storage.getLatestValue(name));
-    };
-    if (length === 1) {
-      hub.addEventListener(name, update);
-      update();
-    }
-    if (length === 3 && typeof factory === 'function') {
-      const detail = factory();
-      storage.get(name).set(ins, detail);
+    if (length === SET_SLOT && typeof factory === 'function') {
       hub.dispatchEvent(new CustomEvent(name));
     }
-    return () => {
-      storage.get(name).delete(ins);
-      if (length === 1) hub.removeEventListener(name, update);
-      if (length === 3) hub.dispatchEvent(new CustomEvent(name));
-    };
-  }, [name, length, ...deps]);
+  }, [length, name, ...deps]);
 
-  if (length === 1) return current;
-  if (length === 3) return undefined;
+  useEffect(() => {
+    if (length === SET_SLOT) {
+      return () => {
+        slot.delete(ref);
+        hub.dispatchEvent(new CustomEvent(name));
+      };
+    }
+  }, [length, name, slot, length]);
+
+  const [current, updateCurrent] = useReducer(slot.getLatest, null, slot.getLatest);
+  useEventListener(name, updateCurrent, { target: hub });
+
+  if (length === GET_SLOT) return current;
+  if (length === SET_SLOT) return undefined;
 
   throw new TypeError(`Failed to execute 'useSlot': 1 or 3 arguments required, but ${length} present.`);
 }
