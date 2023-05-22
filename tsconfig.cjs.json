@@ -2,7 +2,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist/cjs",
-    "module": "CommonJS"
+    "module": "CommonJS",
+    "lib": ["ES6", "DOM"],
+    "types": []
   },
   "exclude": ["src/*/tests"]
 }
