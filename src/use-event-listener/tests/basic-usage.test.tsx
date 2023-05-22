@@ -13,12 +13,10 @@ const Container = () => {
   return <div>{value}</div>;
 };
 
-describe('basic usage', () => {
-  it('renders correct', () => {
-    const { container } = render(<Container />);
-    for (const text of ['Hello', 'Hello World']) {
-      fireEvent(window, new CustomEvent('a', { detail: text }));
-      expect(container.textContent).toBe(text);
-    }
-  });
+it('basic usage', () => {
+  const { container } = render(<Container />);
+  for (const text of ['Hello', 'Hello World']) {
+    fireEvent(window, new CustomEvent('a', { detail: text }));
+    expect(container.textContent).toBe(text);
+  }
 });

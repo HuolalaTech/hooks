@@ -1,31 +1,58 @@
-import React, { useState, useReducer } from 'react';
+import React from 'react';
 import { render } from '@testing-library/react';
 import { fireEvent } from '@testing-library/dom';
 import { useEventListener } from '..';
 
-const Container = () => {
-  const [count, add] = useReducer((i) => i + 1, 1);
-  const [value, update] = useState(count);
-  useEventListener('a', () => {
-    update(count);
-  });
-  return <var onClick={add}>{value}</var>;
+const Component = ({ handler }: { handler: (e: Event) => void }) => {
+  useEventListener('a', handler);
+  return null;
 };
 
-describe('handler change', () => {
-  it('renders correct', () => {
-    const {
-      container: { firstChild },
-    } = render(<Container />);
-    expect(firstChild).toBeTruthy();
+it('handler change', () => {
+  let inc = 0;
 
-    fireEvent(window, new CustomEvent('a'));
-    expect(firstChild?.textContent).toBe('1');
+  const rr = render(
+    <Component
+      handler={() => {
+        inc++;
+      }}
+    />,
+  );
 
-    if (firstChild) fireEvent.click(firstChild);
-    expect(firstChild?.textContent).toBe('1');
+  // Nothing todo, inc must not be changed.
+  expect(inc).toBe(0);
 
-    fireEvent(window, new CustomEvent('a'));
-    expect(firstChild?.textContent).toBe('2');
-  });
+  // Fire a event, inc++ must be executed.
+  fireEvent(window, new CustomEvent('a'));
+  expect(inc).toBe(1);
+
+  // Fire a event, inc++ must be executed.
+  fireEvent(window, new CustomEvent('a'));
+  expect(inc).toBe(2);
+
+  rr.rerender(
+    <Component
+      handler={() => {
+        inc *= 2;
+      }}
+    />,
+  );
+
+  // Nothing todo, inc must not be changed.
+  expect(inc).toBe(2);
+
+  // Fire a event, inc *= 2 must be executed.
+  fireEvent(window, new CustomEvent('a'));
+  expect(inc).toBe(4);
+
+  // Fire a event, inc *= 2 must be executed.
+  fireEvent(window, new CustomEvent('a'));
+  expect(inc).toBe(8);
+
+  // Bad case
+  rr.rerender(<Component handler={undefined as unknown as () => void} />);
+
+  // Nothing todo, inc must not be changed.
+  fireEvent(window, new CustomEvent('a'));
+  expect(inc).toBe(8);
 });
