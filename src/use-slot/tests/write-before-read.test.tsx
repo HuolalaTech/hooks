@@ -1,0 +1,30 @@
+import React from 'react';
+import { useSlot } from '..';
+import { render } from '@testing-library/react';
+
+const Child = () => {
+  const slotA = useSlot('a');
+  return <span>{slotA}</span>;
+};
+
+const Container = () => {
+  useSlot(
+    'a',
+    () => {
+      return 'World';
+    },
+    [],
+  );
+  return (
+    <div>
+      Hello <Child />
+    </div>
+  );
+};
+
+describe('write before read', () => {
+  it('renders correct', () => {
+    const { container } = render(<Container />);
+    expect(container.textContent).toBe('Hello World');
+  });
+});
