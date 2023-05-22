@@ -26,9 +26,7 @@ const Container = () => {
   );
 };
 
-describe('as siblings', () => {
-  it('renders correct', () => {
-    const { container } = render(<Container />);
-    expect(container.textContent).toBe('Hello World');
-  });
+it('as siblings', () => {
+  const { container } = render(<Container />);
+  expect(container.textContent).toBe('Hello World');
 });

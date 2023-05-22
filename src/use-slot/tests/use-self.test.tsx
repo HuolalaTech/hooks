@@ -14,9 +14,7 @@ const Container = () => {
   return <div>{slotA} World</div>;
 };
 
-describe('use self', () => {
-  it('renders correct', () => {
-    const { container } = render(<Container />);
-    expect(container.textContent).toBe('Hello World');
-  });
+it('use self', () => {
+  const { container } = render(<Container />);
+  expect(container.textContent).toBe('Hello World');
 });

@@ -32,9 +32,7 @@ const Container = () => {
   );
 };
 
-describe('as children', () => {
-  it('renders correct', () => {
-    const { container } = render(<Container />);
-    expect(container.textContent).toBe('Hello World');
-  });
+it('as children', () => {
+  const { container } = render(<Container />);
+  expect(container.textContent).toBe('Hello World');
 });

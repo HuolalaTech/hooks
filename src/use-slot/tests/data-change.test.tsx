@@ -29,17 +29,19 @@ const Container = () => {
   );
 };
 
-describe('data change', () => {
-  it('renders correct', () => {
-    const { container } = render(<Container />);
-    expect(container.textContent).toBe('Hello 0 World');
-    act(() => {
-      (container.querySelector('#world') as HTMLElement).click();
-    });
-    expect(container.textContent).toBe('Hello 1 World');
-    act(() => {
-      (container.querySelector('#world') as HTMLElement).click();
-    });
-    expect(container.textContent).toBe('Hello 2 World');
+it('data change', () => {
+  const rr = render(<Container />);
+  const { container } = rr;
+
+  expect(container.textContent).toBe('Hello 0 World');
+
+  act(() => {
+    (container.querySelector('#world') as HTMLElement).click();
   });
+
+  expect(container.textContent).toBe('Hello 1 World');
+  act(() => {
+    (container.querySelector('#world') as HTMLElement).click();
+  });
+  expect(container.textContent).toBe('Hello 2 World');
 });

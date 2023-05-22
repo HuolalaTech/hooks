@@ -70,21 +70,19 @@ const Container = () => {
   );
 };
 
-describe('tree order', () => {
-  it('renders correct', () => {
-    const { container } = render(<Container />);
-    expect(container.textContent).toBe('Z Level1 Level2 Level3');
-    act(() => {
-      (container.querySelector('#l3') as HTMLElement).click();
-    });
-    expect(container.textContent?.trim()).toBe('Z Level1 Level2');
-    act(() => {
-      (container.querySelector('#l2') as HTMLElement).click();
-    });
-    expect(container.textContent?.trim()).toBe('Y Level1');
-    act(() => {
-      (container.querySelector('#l1') as HTMLElement).click();
-    });
-    expect(container.textContent?.trim()).toBe('X');
+it('tree order', () => {
+  const { container } = render(<Container />);
+  expect(container.textContent).toBe('Z Level1 Level2 Level3');
+  act(() => {
+    (container.querySelector('#l3') as HTMLElement).click();
   });
+  expect(container.textContent?.trim()).toBe('Z Level1 Level2');
+  act(() => {
+    (container.querySelector('#l2') as HTMLElement).click();
+  });
+  expect(container.textContent?.trim()).toBe('Y Level1');
+  act(() => {
+    (container.querySelector('#l1') as HTMLElement).click();
+  });
+  expect(container.textContent?.trim()).toBe('X');
 });

@@ -22,9 +22,7 @@ const Container = () => {
   );
 };
 
-describe('basic usage', () => {
-  it('renders correct', () => {
-    const { container } = render(<Container />);
-    expect(container.textContent).toBe('Hello World');
-  });
+it('basic usage', () => {
+  const { container } = render(<Container />);
+  expect(container.textContent).toBe('Hello World');
 });

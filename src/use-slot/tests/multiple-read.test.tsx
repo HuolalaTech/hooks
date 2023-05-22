@@ -31,9 +31,7 @@ const Container = () => {
   );
 };
 
-describe('multiple read', () => {
-  it('renders correct', () => {
-    const { container } = render(<Container />);
-    expect(container.textContent).toBe('Hello Hello Hello Hello World');
-  });
+it('multiple read', () => {
+  const { container } = render(<Container />);
+  expect(container.textContent).toBe('Hello Hello Hello Hello World');
 });
