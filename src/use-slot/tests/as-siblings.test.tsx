@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSlot } from '..';
+import { useSlot, useSlotWriter } from '..';
 import { render } from '@testing-library/react';
 
 const ChildA = () => {
@@ -8,7 +8,7 @@ const ChildA = () => {
 };
 
 const ChildB = () => {
-  useSlot(
+  useSlotWriter(
     'a',
     () => {
       return 'Hello';

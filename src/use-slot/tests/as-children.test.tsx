@@ -1,9 +1,9 @@
 import React from 'react';
-import { useSlot } from '..';
+import { useSlot, useSlotWriter } from '..';
 import { render } from '@testing-library/react';
 
 const Child = () => {
-  useSlot(
+  useSlotWriter(
     'a',
     () => {
       return 'Hello';

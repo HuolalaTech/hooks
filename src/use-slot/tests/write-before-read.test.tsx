@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSlot } from '..';
+import { useSlot, useSlotWriter } from '..';
 import { render } from '@testing-library/react';
 
 const Child = () => {
@@ -9,7 +9,7 @@ const Child = () => {
 };
 
 const Container = () => {
-  useSlot(
+  useSlotWriter(
     'a',
     () => {
       return 'World';

@@ -1,12 +1,12 @@
 import React, { useReducer } from 'react';
 
 import { act } from 'react-dom/test-utils';
-import { useSlot } from '..';
+import { useSlot, useSlotWriter } from '..';
 import { render } from '@testing-library/react';
 
 const Child = () => {
   const [count, click] = useReducer((i: number) => i + 1, 0);
-  useSlot(
+  useSlotWriter(
     'a',
     () => {
       return <span>Hello {count}</span>;

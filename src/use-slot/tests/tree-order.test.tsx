@@ -1,12 +1,12 @@
 import React, { useReducer } from 'react';
 
 import { act } from 'react-dom/test-utils';
-import { useSlot } from '..';
+import { useSlot, useSlotWriter } from '..';
 import { render } from '@testing-library/react';
 
 const Level3 = () => {
   const [hasClicked, click] = useReducer(() => true, false);
-  useSlot(
+  useSlotWriter(
     'a',
     () => {
       return 'Z';
@@ -23,7 +23,7 @@ const Level3 = () => {
 
 const Level2 = () => {
   const [hasClicked, click] = useReducer(() => true, false);
-  useSlot(
+  useSlotWriter(
     'a',
     () => {
       return 'Y';
@@ -43,7 +43,7 @@ const Level2 = () => {
 
 const Level1 = () => {
   const [hasClicked, click] = useReducer(() => true, false);
-  useSlot(
+  useSlotWriter(
     'a',
     () => {
       return 'X';

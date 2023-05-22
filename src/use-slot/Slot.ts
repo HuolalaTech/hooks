@@ -1,5 +1,5 @@
-export class Slot {
-  private readonly enties = [] as { ref: unknown; value?: unknown }[];
+export class Slot<T = unknown> {
+  private readonly enties = [] as { ref: unknown; value?: T }[];
 
   public readonly getLatest = () => {
     const { enties } = this;
@@ -7,7 +7,7 @@ export class Slot {
     if (latest) return latest.value;
   };
 
-  public set(ref: unknown, value: unknown) {
+  public set(ref: unknown, value: T) {
     const { enties } = this;
     for (let i = 0; i < enties.length; i++) {
       if (enties[i].ref === ref) {
