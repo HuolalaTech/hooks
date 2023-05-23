@@ -1,11 +1,19 @@
-export class Slot<T = unknown> {
-  private readonly enties = [] as { ref: unknown; value?: T }[];
+type Listener<T> = (value: T | undefined) => void;
 
-  public readonly getLatest = () => {
+export class Slot<T = unknown> {
+  private readonly enties: { ref: unknown; value?: T }[];
+  private readonly listeners: Listener<T>[];
+
+  constructor() {
+    this.enties = [];
+    this.listeners = [];
+  }
+
+  public getLatest() {
     const { enties } = this;
     const latest = enties[enties.length - 1];
     if (latest) return latest.value;
-  };
+  }
 
   public set(ref: unknown, value: T) {
     const { enties } = this;
@@ -32,6 +40,25 @@ export class Slot<T = unknown> {
         enties.splice(i, 1);
         return;
       }
+    }
+  }
+
+  public on(handler: Listener<T>) {
+    this.listeners.push(handler);
+  }
+
+  public off(handler: Listener<T>) {
+    const { listeners } = this;
+    const index = listeners.indexOf(handler);
+    if (index !== -1) listeners.splice(index, 1);
+  }
+
+  public fire() {
+    const { listeners } = this;
+    if (listeners.length === 0) return;
+    const value = this.getLatest();
+    for (let i = 0; i < listeners.length; i++) {
+      listeners[i](value);
     }
   }
 }

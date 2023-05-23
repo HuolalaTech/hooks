@@ -7,18 +7,18 @@ import type { DependencyList, ReactNode } from 'react';
 
 /**
  * Read the slot content. You can set content using `useSlotWritter(name, factory, deps)`.
- * @param name slot name
+ * @param name slot identifier
  */
-export declare function useSlot(name: string): ReactNode;
+export declare function useSlot(name: PropertyKey): ReactNode;
 
 /**
  * Set the slot content and notify all references update in realtime.
  * When the current component unmounted, all content may rollback to previous state.
- * @param name slot name
+ * @param name slot identifier
  * @param factory content factory
  * @param deps dependencies
  */
-export declare function useSlotWriter(name: string, factory: () => ReactNode, deps: DependencyList): void;
+export declare function useSlotWriter(name: PropertyKey, factory: () => ReactNode, deps: DependencyList): void;
 ```
 
 ## Demo
