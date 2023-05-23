@@ -12,7 +12,7 @@ const hub = new EventTarget();
 const storage: Record<PropertyKey, Slot<ReactNode>> = Object.create(null);
 
 /**
- * Read the slot content. you can set content by `useSlotWriter(name, factory, deps)`.
+ * Read the slot content. You can set content using `useSlotWritter(name, factory, deps)`.
  * @param name slot name
  */
 export const useSlot = (name: string) => {
@@ -24,7 +24,7 @@ export const useSlot = (name: string) => {
 
 /**
  * Set the slot content and notify all references update in realtime.
- * The content may rollback to previous state when current component unmounted.
+ * When the current component unmounted, all content may rollback to previous state.
  * @param name slot name
  * @param factory content factory
  * @param deps dependencies
