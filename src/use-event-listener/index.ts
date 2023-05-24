@@ -1,10 +1,18 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
-interface Options extends Omit<AddEventListenerOptions, 'once'> {
-  target?: EventTarget;
+interface Options<T extends EventTarget> extends Omit<AddEventListenerOptions, 'once'> {
+  target?: T;
 }
 
 type Handler<E extends Event> = (e: E) => void;
+
+type GuessEvent<T extends EventTarget, N extends string> = T extends Node | Window | XMLHttpRequest
+  ? T extends { [p in `on${N}`]?: ((e: infer U) => void) | null }
+    ? U extends Event
+      ? U
+      : Event
+    : Event
+  : Event;
 
 /**
  * Bind event listener on whole component lifecycle
@@ -12,11 +20,11 @@ type Handler<E extends Event> = (e: E) => void;
  * @param options.capture @see AddEventListenerOptions['capture']
  * @param options.passive @see AddEventListenerOptions['passive']
  */
-export function useEventListener<E extends Event = Event>(
-  eventName: string,
-  listener: Handler<E>,
-  options: Options = {},
-) {
+export function useEventListener<
+  N extends string = string,
+  T extends EventTarget = Window,
+  E extends Event = GuessEvent<T, N>,
+>(eventName: N, listener: Handler<E>, options: Options<T> = {}) {
   const { target = window, passive, capture } = options;
 
   // In fact, some developer usually wite code like this
@@ -54,8 +62,6 @@ export function useEventListener<E extends Event = Event>(
   }, [target, eventName, passive, capture]);
 
   useEffect(() => {
-    return () => {
-      target.removeEventListener(eventName, handler, { capture });
-    };
+    return () => target.removeEventListener(eventName, handler, { capture });
   }, [target, eventName, passive, capture]);
 }
