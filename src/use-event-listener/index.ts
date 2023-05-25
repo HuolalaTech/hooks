@@ -6,6 +6,9 @@ interface Options<T extends EventTarget> extends Omit<AddEventListenerOptions, '
 
 type Handler<E extends Event> = (e: E) => void;
 
+/**
+ * A native DOM event target usually has an associated `on${name}` property, from which we can infer the event type.
+ */
 type GuessEvent<T extends EventTarget, N extends string> = T extends Node | Window | XMLHttpRequest
   ? T extends { [p in `on${N}`]?: ((e: infer U) => void) | null }
     ? U extends Event
