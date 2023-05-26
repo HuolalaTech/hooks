@@ -20,3 +20,28 @@ it('basic usage', () => {
     expect(container.textContent).toBe(text);
   }
 });
+
+it('type infering', () => {
+  const neverCall = jest.fn(() => {
+    useEventListener('keydown', (e) => {
+      // The e is a KeyboardEvent, because the target is a window by default.
+      e.key;
+    });
+
+    useEventListener('click', (e) => {
+      // The e is a MouseEvent, because the target is a window by default.
+      e.clientX;
+    });
+
+    useEventListener(
+      'click',
+      (e) => {
+        // Asserts the e is a pure Event and not a MouseEvent.
+        const _: Event extends typeof e ? true : false = true;
+        void _;
+      },
+      { target: new EventTarget() },
+    );
+  });
+  expect(neverCall).toBeCalledTimes(0);
+});
